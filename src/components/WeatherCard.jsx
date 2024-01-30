@@ -3,28 +3,25 @@ import { useState } from 'react';
 import { CiSearch } from "react-icons/ci";
 import { RiWindyLine } from "react-icons/ri";
 import { MdOutlineWaterDrop } from "react-icons/md";
-import { useEffect } from 'react';
 export default function WeatherCard() {
     const [temp, setTemp] = useState('');
     const [location, setlocation]=useState("");
     const [humidity, setHumidity] = useState("");
     const [windspeed, setWindspeed] = useState("");
     const [name, setName] = useState('');
-    useEffect (() => {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition((position) => {
-          const latitude = position.coords.latitude;
-          const longitude =  position.coords.longitude;
-          console.log(latitude);
-          getW(latitude,longitude);
-          getCityname(latitude, longitude);
-        }, (error) => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+      const latitude = position.coords.latitude;
+      const longitude =  position.coords.longitude;
+      console.log(latitude);
+      getW(latitude,longitude);
+      getCityname(latitude, longitude);
+      }, (error) => {
           console.error("Error getting geolocation:", error.message);
-        });
-        } else {
+      });
+      } else {
           console.error("Geolocation is not supported by this browser.");
-        }
-      },[]);
+      }
       async function getCityname(latitude, longitude) {
         try {
           console.log("Success");
