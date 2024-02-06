@@ -10,7 +10,7 @@ export default function WeatherCard() {
   const [humidity, setHumidity] = useState("");
   const [windspeed, setWindspeed] = useState("");
   const [name, setName] = useState('');
-  const [weaCon, setweaCon] = useState('');
+  const [wiCon, setwiCon] = useState("");
   useEffect (() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -54,6 +54,23 @@ export default function WeatherCard() {
       const resw = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=0918dab7a79455ebc16c44a0001be4c7`);
       const winfo = resw.data;
       const temp=Math.round(winfo.main.temp-273.12);
+      console.log(winfo.weather[0].main," TTT");
+      if(winfo.weather[0].main === "Rain")
+      {
+        setwiCon("🌧");
+      }
+      else if(winfo.weather[0].main === "Clouds")
+      {
+        setwiCon("☁");
+      }
+      else if(winfo.weather[0].main === "Clear")
+      {
+        setwiCon("☀");
+      }
+      else
+      {
+        setwiCon("🌥️");
+      }
       setHumidity(winfo.main.humidity);
       setWindspeed(winfo.wind.speed);
       setTemp(temp);
@@ -72,7 +89,7 @@ export default function WeatherCard() {
             </div>
             <div className="flex flex-col mt-32 items-center text-white mb-40">
                 <div className="text-9xl mb-5">
-                    <h1>🌥️</h1>
+                    <h1>{wiCon}</h1>
                 </div>
                 <div className="text-5xl font-semibold mb-6">
                     <h1>{temp}°C</h1>
