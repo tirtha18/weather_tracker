@@ -3,12 +3,15 @@ import { useState } from 'react';
 import { CiSearch } from "react-icons/ci";
 import { RiWindyLine } from "react-icons/ri";
 import { MdOutlineWaterDrop } from "react-icons/md";
+import { useEffect } from 'react';
 export default function WeatherCard() {
-    const [temp, setTemp] = useState('');
-    const [location, setlocation]=useState("");
-    const [humidity, setHumidity] = useState("");
-    const [windspeed, setWindspeed] = useState("");
-    const [name, setName] = useState('');
+  const [temp, setTemp] = useState('');
+  const [location, setlocation]=useState("");
+  const [humidity, setHumidity] = useState("");
+  const [windspeed, setWindspeed] = useState("");
+  const [name, setName] = useState('');
+  const [weaCon, setweaCon] = useState('');
+  useEffect (() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
       const latitude = position.coords.latitude;
@@ -16,48 +19,49 @@ export default function WeatherCard() {
       console.log(latitude);
       getW(latitude,longitude);
       getCityname(latitude, longitude);
-      }, (error) => {
-          console.error("Error getting geolocation:", error.message);
-      });
-      } else {
-          console.error("Geolocation is not supported by this browser.");
-      }
-      async function getCityname(latitude, longitude) {
-        try {
-          console.log("Success");
-          const respos = await axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=0918dab7a79455ebc16c44a0001be4c7`); 
-          setName(respos.data[0].name);
-        } catch (error) {
-          console.error("Error getting position", error);
-        }
-      }
-    async function getPosition() {
-      try {
-        console.log("Success");
-        const respos = await axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=5&appid=0918dab7a79455ebc16c44a0001be4c7`);
-        const lat = respos.data[0].lat;
-        const lon = respos.data[0].lon; 
-        setName(respos.data[0].name);
-        console.log(respos.data[0]);
-        getW(lat, lon);
-      } catch (error) {
-        console.error("Error getting position", error);
-      }
-    }  
-    async function getW(lat, lon) {
-      try {
-        console.log("Success");
-        const resw = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=0918dab7a79455ebc16c44a0001be4c7`);
-        const winfo = resw.data;
-        const temp=Math.round(winfo.main.temp-273.12);
-        setHumidity(winfo.main.humidity);
-        setWindspeed(winfo.wind.speed);
-        setTemp(temp);
-      } catch (error) {
-        console.error("Error getting weather", error);
-      }
+    }, (error) => {
+      console.error("Error getting geolocation:", error.message);
+    });
+    } else {
+      console.error("Geolocation is not supported by this browser.");
     }
-    //getPosition();
+  },[]);
+  async function getCityname(latitude, longitude) {
+    try {
+      console.log("Success");
+      const respos = await axios.get(`https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=0918dab7a79455ebc16c44a0001be4c7`); 
+      setName(respos.data[0].name);
+    } catch (error) {
+      console.error("Error getting position", error);
+    }
+  }
+  async function getPosition() {
+    try {
+      console.log("Success");
+      const respos = await axios.get(`https://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=5&appid=0918dab7a79455ebc16c44a0001be4c7`);
+      const lat = respos.data[0].lat;
+      const lon = respos.data[0].lon; 
+      setName(respos.data[0].name);
+      console.log(respos.data[0]);
+      getW(lat, lon);
+    } catch (error) {
+      console.error("Error getting position", error);
+    }
+  }  
+  async function getW(lat, lon) {
+    try {
+      console.log("Success");
+      const resw = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=0918dab7a79455ebc16c44a0001be4c7`);
+      const winfo = resw.data;
+      const temp=Math.round(winfo.main.temp-273.12);
+      setHumidity(winfo.main.humidity);
+      setWindspeed(winfo.wind.speed);
+      setTemp(temp);
+    } catch (error) {
+      console.error("Error getting weather", error);
+    }
+  }
+  //getPosition();
   return (
     <div className="w-screen min-h-screen max-h-full bg-black">
         <div className="flex justify-center">
