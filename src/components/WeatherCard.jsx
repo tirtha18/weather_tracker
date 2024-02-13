@@ -16,6 +16,7 @@ export default function WeatherCard() {
   const [wiCon, setwiCon] = useState("");
   const [Feelslike, setFeelslike] = useState("");
   const [Pressure, setPressure] = useState("");
+  const [aka, setaka] = useState(false);
   useEffect (() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -40,6 +41,13 @@ export default function WeatherCard() {
       console.error("Error getting position", error);
     }
   }
+  useEffect (() => {
+    let l=location.toUpperCase();
+    if(l === 'AKASH LAYEK')
+    setaka(true);
+    else
+    setaka(false);
+  },[aka,location])
   async function getPosition() {
     try {
       console.log("Success");
@@ -88,8 +96,20 @@ export default function WeatherCard() {
   }
   //getPosition();
   return (
-    <div className="w-screen min-h-screen max-h-full bg-black">
-        <div className="flex justify-center">
+    <>
+    {
+    (aka)&&
+    (<div className={`bg-black w-screen h-screen flex-col flex justify-center items-center text-white`}>
+    <div className=" text-6xl text-white"> The webcam turned on due to a certain bug.</div>
+    <div><button className="bg-blue-600 rounded-2xl px-4 py-2 mt-20"onClick={() => {
+      setlocation("");
+    }}>Turn Webcam off!</button></div>
+    </div>)
+    }
+    { 
+    (!aka)&&
+    (<div className={`w-screen min-h-screen max-h-full bg-black `}>
+        <div className={`flex justify-center`}>
           <div className=" flex flex-col lg:min-h-screen  min-h-screen max-h-full sm:max-w-sm w-screen bg items-center bg-gradient-to-br from-violet-600 to-blue-800">
             <div className="flex flex-row mt-6">
                 <div><input placeholder="Search" type="text"  className=" rounded-3xl h-12 w-auto mr-3 text-xl text-gray-400 px-5 uppercase" value={location} onChange={() =>{setlocation(event.target.value);}} /></div>
@@ -144,6 +164,8 @@ export default function WeatherCard() {
             <div></div>
           </div>
         </div>
-      </div>
+      </div>)
+      }
+      </>
   )
 }
