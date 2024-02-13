@@ -4,6 +4,9 @@ import { CiSearch } from "react-icons/ci";
 import { RiWindyLine } from "react-icons/ri";
 import { MdOutlineWaterDrop } from "react-icons/md";
 import { useEffect } from 'react';
+import { BsClouds } from "react-icons/bs";
+import { CiCloudSun } from "react-icons/ci";
+import { LiaCloudSolid } from "react-icons/lia";
 export default function WeatherCard() {
   const [temp, setTemp] = useState('');
   const [location, setlocation]=useState("");
@@ -11,6 +14,8 @@ export default function WeatherCard() {
   const [windspeed, setWindspeed] = useState("");
   const [name, setName] = useState('');
   const [wiCon, setwiCon] = useState("");
+  const [Feelslike, setFeelslike] = useState("");
+  const [Pressure, setPressure] = useState("");
   useEffect (() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -54,18 +59,19 @@ export default function WeatherCard() {
       const resw = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=0918dab7a79455ebc16c44a0001be4c7`);
       const winfo = resw.data;
       const temp=Math.round(winfo.main.temp-273.12);
+      const feels=Math.round(winfo.main.feels_like-273.12);
       console.log(winfo.weather[0].main," TTT");
       if(winfo.weather[0].main === "Rain")
       {
-        setwiCon("🌧");
+        setwiCon("🌧️");
       }
       else if(winfo.weather[0].main === "Clouds")
       {
-        setwiCon("☁");
+        setwiCon("☁️");
       }
       else if(winfo.weather[0].main === "Clear")
       {
-        setwiCon("☀");
+        setwiCon("☀️");
       }
       else
       {
@@ -74,6 +80,8 @@ export default function WeatherCard() {
       setHumidity(winfo.main.humidity);
       setWindspeed(winfo.wind.speed);
       setTemp(temp);
+      setFeelslike(feels);
+      setPressure(winfo.main.pressure);
     } catch (error) {
       console.error("Error getting weather", error);
     }
@@ -82,12 +90,12 @@ export default function WeatherCard() {
   return (
     <div className="w-screen min-h-screen max-h-full bg-black">
         <div className="flex justify-center">
-          <div className=" flex flex-col min-h-screen max-h-full sm:max-w-sm w-screen bg items-center bg-gradient-to-br from-blue-600 to-violet-800">
+          <div className=" flex flex-col lg:min-h-screen  min-h-screen max-h-full sm:max-w-sm w-screen bg items-center bg-gradient-to-br from-violet-600 to-blue-800">
             <div className="flex flex-row mt-6">
                 <div><input placeholder="Search" type="text"  className=" rounded-3xl h-12 w-auto mr-3 text-xl text-gray-400 px-5 uppercase" value={location} onChange={() =>{setlocation(event.target.value);}} /></div>
                 <div><button className="rounded-full w-12 h-12 bg-white flex items-center justify-center " onClick={() => {console.log(location);getPosition();}}><CiSearch size={31}/></button></div>
             </div>
-            <div className="flex flex-col mt-32 items-center text-white mb-40">
+            <div className="flex flex-col mt-24 items-center text-white">
                 <div className="text-9xl mb-5">
                     <h1>{wiCon}</h1>
                 </div>
@@ -98,22 +106,42 @@ export default function WeatherCard() {
                     <h1>{name}</h1>
                 </div>
             </div>
-            <div className="flex flex-row text-white justify-between max-w-sm w-screen sm:px-3 px-4 mb-8">
+            <div className="flex flex-col mt-28">
+            <div className="flex flex-row text-white justify-between max-w-sm w-screen sm:px-3 px-4">
                 <div className="flex flex-row font-semibold">
-                    <MdOutlineWaterDrop size={60} className="mr-1"/>
+                  <LiaCloudSolid size={65}/>
                     <div className="flex flex-col">
-                        <h1 className="text-2xl">{humidity}%</h1>
-                        <h2>Humidity</h2>
+                        <h1 className="text-2xl">{Feelslike}°</h1>
+                        <h2>Real feel</h2>
                     </div>
                 </div>
                 <div className="flex flex-row font-semibold">
-                    <RiWindyLine size={60} className="mr-1"/>
+                    <RiWindyLine size={58} className="mr-1"/>
                     <div className="flex flex-col">
                         <h1 className="text-2xl">{windspeed}</h1>
                         <h2>Wind Speed</h2>
                     </div>
                 </div>                            
             </div>
+            <div className="flex flex-row text-white justify-between max-w-sm w-screen sm:px-3 px-4 mt-6">
+                <div className="flex flex-row font-semibold">
+                    <MdOutlineWaterDrop size={58} className="mr-1"/>
+                    <div className="flex flex-col">
+                        <h1 className="text-2xl">{humidity}%</h1>
+                        <h2>Humidity</h2>
+                    </div>
+                </div>
+                <div className="flex flex-row font-semibold">
+                    <BsClouds size={60} className="mr-1"/>
+                    <div className="flex flex-col">
+                        <div className="flex flex-row "><h1 className="text-2xl">{Pressure} </h1></div>
+                        <h2 className='mr-4'>Pressure</h2>
+                    </div>
+                </div>                            
+            </div>
+            </div>
+            
+            <div></div>
           </div>
         </div>
       </div>
